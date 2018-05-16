@@ -39,8 +39,8 @@ LogY=options.LogY
 test=options.test
 DrawLeptons=True
 doRhoScale=False
-doGMCEtaScale=True
-doGMCPhPtScale=False
+doGMCEtaScale=False
+doGMCPhPtScale=True
 dyGJets=options.dyGJets
 muoneg=options.muoneg
 
@@ -59,17 +59,21 @@ g_scale='(1)'
 mc_scale='(1)'
 zjets_scale='(1)'
 
-if channel=='mu': 
+if channel=='mu':
 #    mc_scale='(1.02942)'
-#    mc_scale='(0.8*1.00539823551)'
-    zjets_scale='(1.04186344742)'
-elif channel=='el': 
+#    zjets_scale='(1.03627471042)'
+    if cutChain=='SR': zjets_scale='(0.960865)' # mc SR
+    elif cutChain=='SRdPhiGT0p5': zjets_scale='(0.999129399075)' # mc SR
+    else: zjets_scale='(1.03410)' # mc zpt50
+elif channel=='el':
 #    mc_scale='(1.02139)'
-#    mc_scale='(1.00448813901)'
-    zjets_scale='(1.01817588601)'
+#    zjets_scale='(1.04227778889)'
+    if cutChain=='SR': zjets_scale='(1.01822)' # mc SR
+    elif cutChain=='SRdPhiGT0p5': zjets_scale='(1.01275299738)' # mc SR
+    else: zjets_scale='(1.03737)' # mc zpt50
 else: 
 #    mc_scale='(1.02942)'
-    zjets_scale='(1.025)'
+    zjets_scale='(1.03627471042)'
 
 # temp turn off mc_scale
 #mc_scale="(1)"
@@ -78,27 +82,9 @@ else:
 # non reso alpha
 nonreso_alpha_el=1.0
 nonreso_alpha_mu=1.0
-#zpt>10
-#nonreso_alpha_el=0.35360488202
-#nonreso_alpha_mu=0.682444330736
-# zpt>70
-#nonreso_alpha_el=0.368708
-#nonreso_alpha_mu=0.607408
-# zpt>50
-#nonreso_alpha_el=0.353651462281
-#nonreso_alpha_mu=0.614219922129
-# zpt>50 met<100
-#nonreso_alpha_el=0.332060243754
-#nonreso_alpha_mu=0.629043099213 
 
-nonreso_alpha_el=0.346341188158
-#nonreso_alpha_mu=0.687122143356*0.8 
-#nonreso_alpha_mu=0.687122143356*0.75 
-#nonreso_alpha_mu=0.687122143356*0.6 
-#nonreso_alpha_mu=0.687122143356*0.9 
-#nonreso_alpha_mu=0.687122143356*0.95 
-#nonreso_alpha_mu=0.687122143356*0.85 
-nonreso_alpha_mu=0.696656700696
+nonreso_alpha_el=0.397075177316
+nonreso_alpha_mu=0.704939528419
 
 #
 
@@ -111,16 +97,24 @@ if doRhoScale:
 
 if doGMCEtaScale:
     tag+="GMCEtaWt_"
-    g_scale=g_scale+"*(0.87*TMath::Gaus(llnunu_l1_eta,0.65,0.56)+0.87*TMath::Gaus(llnunu_l1_eta,-0.65,0.56)+0.65*TMath::Gaus(llnunu_l1_eta,1.90,0.25)+0.65*TMath::Gaus(llnunu_l1_eta,-1.90,0.25))"
+    g_scale=g_scale+"*(1.05*TMath::Gaus(llnunu_l1_eta,0.7,0.63)+1.05*TMath::Gaus(llnunu_l1_eta,-0.7,0.63)+0.94*TMath::Gaus(llnunu_l1_eta,2.02,0.34)+0.94*TMath::Gaus(llnunu_l1_eta,-2.02,0.34))"
 
 if doGMCPhPtScale:
     tag+="GMCPhPtWt_"
-    g_scale=g_scale+"*((-1.06624+0.0580113*pow(llnunu_l1_pt,1)-5.09328e-4*pow(llnunu_l1_pt,2)+2.28513e-6*pow(llnunu_l1_pt,3)-6.03131e-9*pow(llnunu_l1_pt,4)+9.84946e-12*pow(llnunu_l1_pt,5)-1.00558e-14*pow(llnunu_l1_pt,6)+6.244e-18*pow(llnunu_l1_pt,7)-2.15543e-21*pow(llnunu_l1_pt,8)+3.17021e-25*pow(llnunu_l1_pt,9))*(llnunu_l1_pt<=1000)+(0.688060)*(llnunu_l1_pt>1000))"
+#    g_scale+="*((-0.371771+0.0193019*pow(llnunu_l1_pt,1)-0.000119102*pow(llnunu_l1_pt,2)+3.90785e-07*pow(llnunu_l1_pt,3)-7.29192e-10*pow(llnunu_l1_pt,4)+7.7063e-13*pow(llnunu_l1_pt,5)-4.27744e-16*pow(llnunu_l1_pt,6)+9.61926e-20*pow(llnunu_l1_pt,7))*(llnunu_l1_pt<=900)+(0.723945)*(llnunu_l1_pt>900))"  # for allcorV2
+#    g_scale+="*((-0.0359107+0.0106695*llnunu_l1_pt-4.35056e-05*pow(llnunu_l1_pt,2)+7.6524e-08*pow(llnunu_l1_pt,3)-6.28775e-11*pow(llnunu_l1_pt,4)+1.9693e-14*pow(llnunu_l1_pt,5))*(llnunu_l1_pt<=900)+(0.487691)*(llnunu_l1_pt>900))"  # for ReReco
+    g_scale+="*((0.295668+0.0127154*llnunu_l1_pt-7.71163e-05*pow(llnunu_l1_pt,2)+2.2603e-07*pow(llnunu_l1_pt,3)-3.50496e-10*pow(llnunu_l1_pt,4)+2.7572e-13*pow(llnunu_l1_pt,5)-8.66455e-17*pow(llnunu_l1_pt,6))*(llnunu_l1_pt<=800)+(0.912086)*(llnunu_l1_pt>800))"  # for reminiaod allcorV2 mc hlt
+#    g_scale+="*((0.322959+0.0107055*llnunu_l1_pt-5.56587e-05*pow(llnunu_l1_pt,2)+1.26764e-07*pow(llnunu_l1_pt,3)-1.49478e-10*pow(llnunu_l1_pt,4)+8.91559e-14*pow(llnunu_l1_pt,5)-2.13034e-17*pow(llnunu_l1_pt,6))*(llnunu_l1_pt<=900)+(0.536969)*(llnunu_l1_pt>900))"  # for ReReco mc hlt
 
 outdir='plots'
 
-indir='/home/heli/XZZ/80X_20170202_light_Skim/'
-lumi=35.87
+#indir='/home/heli/XZZ/80X_20170202_light_hlt_Skim/'
+#indir='/home/heli/XZZ/80X_20170202_light_hlt_RcSkim/'
+indir='/home/heli/XZZ/80X_20170202_light_hlt_allcorV2RcSkim/'
+#indir='/home/heli/XZZ/80X_20170202_light_hlt_allcorV2Skim/'
+#indir='/home/heli/XZZ/80X_20170202_light_Skim/'
+#lumi=35.9
+lumi=35.9
 sepSig=True
 doRatio=True
 Blind=options.Blind
@@ -131,8 +125,6 @@ puWeight='puWeightsummer16'
 k=1 # signal scale
 ZPtWeight="ZPtWeight"
 
-#elChannel='((abs(llnunu_l1_l1_pdgId)==11||abs(llnunu_l1_l2_pdgId)==11)&&llnunu_l1_l1_pt>115&&abs(llnunu_l1_l1_eta)<2.5&&llnunu_l1_l2_pt>35&&abs(llnunu_l1_l2_eta)<2.5)'
-#muChannel='((abs(llnunu_l1_l1_pdgId)==13||abs(llnunu_l1_l2_pdgId)==13)&&llnunu_l1_l1_pt>50&&abs(llnunu_l1_l1_eta)<2.4&&llnunu_l1_l2_pt>20&&abs(llnunu_l1_l2_eta)<2.4&&(llnunu_l1_l1_highPtID>0.99||llnunu_l1_l2_highPtID>0.99))'
 elChannel='((abs(llnunu_l1_l1_pdgId)==11||abs(llnunu_l1_l2_pdgId)==11)&&llnunu_l1_l1_pt>120&&abs(llnunu_l1_l1_eta)<2.5&&llnunu_l1_l2_pt>35&&abs(llnunu_l1_l2_eta)<2.5)'
 muChannel='((abs(llnunu_l1_l1_pdgId)==13||abs(llnunu_l1_l2_pdgId)==13)&&llnunu_l1_l1_pt>60&&abs(llnunu_l1_l1_eta)<2.4&&llnunu_l1_l2_pt>20&&abs(llnunu_l1_l2_eta)<2.4&&(llnunu_l1_l1_highPtID>0.99||llnunu_l1_l2_highPtID>0.99))'
 photonFakeID='(llnunu_l1_l1_pdgId==19801117)'
@@ -159,7 +151,8 @@ else:
 #tag += '_'
 
 
-paveText="#sqrt{s} = 13 TeV 2016 L = "+"{:.4}".format(float(lumi))+" fb^{-1}"
+#paveText="#sqrt{s} = 13 TeV 2016 L = "+"{:.3}".format(float(lumi))+" fb^{-1}"
+paveText="{:.3}".format(float(lumi))+" fb^{-1} (13 TeV)"
 
 metfilter='(Flag_EcalDeadCellTriggerPrimitiveFilter&&Flag_HBHENoiseIsoFilter&&Flag_goodVertices&&Flag_HBHENoiseFilter&&Flag_globalTightHalo2016Filter&&Flag_eeBadScFilter)'
 
@@ -172,6 +165,7 @@ cuts_zmass_50_180="(llnunu_l1_mass_to_plot>50&&llnunu_l1_mass_to_plot<180)"
 cuts_zpt100="(llnunu_l1_pt>100)"
 cuts_zpt150="(llnunu_l1_pt>150)"
 cuts_zpt200="(llnunu_l1_pt>200)"
+cuts_zpt300="(llnunu_l1_pt>300)"
 cuts_met50="(llnunu_l2_pt_to_plot>50)"
 cuts_met100="(llnunu_l2_pt_to_plot>100)"
 cuts_met200="(llnunu_l2_pt_to_plot>200)"
@@ -183,6 +177,7 @@ cuts_loose_zptgt100lt400="("+cuts_lepaccept+"&&"+cuts_zmass+"&&llnunu_l1_pt>100&
 cuts_loose_zll="("+cuts_lepaccept+"&&"+cuts_zmass+"&&"+cuts_zpt100+")"
 cuts_loose_zpt150="("+cuts_lepaccept+"&&"+cuts_zmass+"&&"+cuts_zpt150+")"
 cuts_loose_zpt200="("+cuts_lepaccept+"&&"+cuts_zmass+"&&"+cuts_zpt200+")"
+cuts_loose_zpt300="("+cuts_lepaccept+"&&"+cuts_zmass+"&&"+cuts_zpt300+")"
 cuts_loose_zll_met50="("+cuts_lepaccept+"&&"+cuts_zmass+"&&"+cuts_zpt100+"&&"+cuts_met50+")"
 cuts_loose_zll_met100="("+cuts_lepaccept+"&&"+cuts_zmass+"&&"+cuts_zpt100+"&&"+cuts_met100+")"
 cuts_loose_zll_met200="("+cuts_lepaccept+"&&"+cuts_zmass+"&&"+cuts_zpt100+"&&"+cuts_met200+")"
@@ -201,8 +196,10 @@ cuts_CR="("+cuts_lepaccept+"&&"+cuts_zmass+"&&llnunu_l1_pt>50&&!(llnunu_l1_pt>10
 cuts_CR1="("+cuts_lepaccept+"&&"+cuts_zmass+"&&llnunu_l1_pt>100&&llnunu_l2_pt_to_plot<50)"
 cuts_CR2="("+cuts_lepaccept+"&&"+cuts_zmass+"&&llnunu_l1_pt>50&&llnunu_l1_pt<100&&llnunu_l2_pt_to_plot>50)"
 cuts_CR3="("+cuts_lepaccept+"&&"+cuts_zmass+"&&llnunu_l1_pt>50&&llnunu_l1_pt<100&&llnunu_l2_pt_to_plot<50)"
+cuts_SRMtLt180="("+cuts_lepaccept+"&&"+cuts_zmass+"&&"+cuts_zpt100+"&&"+cuts_met50+"&&llnunu_mt_to_plot<180)"
 
 if cutChain=='loosecut': cuts=cuts_loose
+elif cutChain=='lepaccept': cuts=cuts_lepaccept
 elif cutChain=='tight': cuts=cuts_loose_z
 elif cutChain=='tightzpt20': cuts=cuts_loose_zpt20
 elif cutChain=='tightzpt50': cuts=cuts_loose_zpt50
@@ -211,6 +208,7 @@ elif cutChain=='tightzptgt100lt400': cuts=cuts_loose_zptgt100lt400
 elif cutChain=='tightzpt100': cuts=cuts_loose_zll
 elif cutChain=='tightzpt150': cuts=cuts_loose_zpt150
 elif cutChain=='tightzpt200': cuts=cuts_loose_zpt200
+elif cutChain=='tightzpt300': cuts=cuts_loose_zpt300
 elif cutChain=='tightzpt100met50': cuts=cuts_loose_zll_met50
 elif cutChain=='tightzpt100met100': cuts=cuts_loose_zll_met100
 elif cutChain=='tightzpt100met200': cuts=cuts_loose_zll_met200
@@ -230,17 +228,41 @@ elif cutChain=='CR': cuts=cuts_CR
 elif cutChain=='CR1': cuts=cuts_CR1
 elif cutChain=='CR2': cuts=cuts_CR2
 elif cutChain=='CR3': cuts=cuts_CR3
+elif cutChain=='SRmetParaLTm80': cuts=cuts_loose_zll_met50+"&&llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi)<-80"
+elif cutChain=='SRmetParaLT0': cuts=cuts_loose_zll_met50+"&&llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi)<0"
+elif cutChain=='SRmetParaGT0': cuts=cuts_loose_zll_met50+"&&llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi)>0"
+elif cutChain=='SRmetParaLT50': cuts=cuts_loose_zll_met50+"&&llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi)<50"
+elif cutChain=='SRmetParaLT100': cuts=cuts_loose_zll_met50+"&&llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi)<100"
+elif cutChain=='SRdPhiGT0p5': cuts=cuts_loose_zll_met50+"&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))>0.5"
+elif cutChain=='SRdPhiGT0p3': cuts=cuts_loose_zll_met50+"&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))>0.3"
+elif cutChain=='SRdPhiLT0p5': cuts=cuts_loose_zll_met50+"&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))<0.5"
+elif cutChain=='SRdPhiGT0p5LT1': cuts=cuts_loose_zll_met50+"&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))>0.5&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))<1"
+elif cutChain=='SRdPhiGT1LT1p5': cuts=cuts_loose_zll_met50+"&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))>1&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))<1.5"
+elif cutChain=='SRdPhiGT1p5LT2': cuts=cuts_loose_zll_met50+"&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))>1.5&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))<2"
+elif cutChain=='SRdPhiGT2': cuts=cuts_loose_zll_met50+"&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))>2"
+elif cutChain=='SRMetGT55': cuts=cuts_loose_zll_met50+"&&llnunu_l2_pt_to_plot>55"
+elif cutChain=='SRMtLt180': cuts=cuts_SRMtLt180
+elif cutChain=='zpt100dPhiLT0p5': cuts=cuts_loose_zll+"&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))<0.5"
+elif cutChain=='zpt100dPhiGT0p5LT1': cuts=cuts_loose_zll+"&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))>0.5&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))<1"
+elif cutChain=='zpt100dPhiGT1LT1p5': cuts=cuts_loose_zll+"&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))>1&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))<1.5"
+elif cutChain=='zpt100dPhiGT1p5LT2': cuts=cuts_loose_zll+"&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))>1.5&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))<2"
+elif cutChain=='zpt100dPhiGT2': cuts=cuts_loose_zll+"&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))>2"
+elif cutChain=='SRMtGt0p8Lt0p95': cuts=cuts_loose_zll_met50+"&&llnunu_mt_to_plot>800&&llnunu_mt_to_plot<950"
+elif cutChain=='SRMtGt1Lt1p05': cuts=cuts_loose_zll_met50+"&&llnunu_mt_to_plot>1000&&llnunu_mt_to_plot<1050"
+elif cutChain=='SRdPhiGT0p5': cuts=cuts_loose_zll_met50+"&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))>0.5"
 else : cuts=cuts_loose
 
 
 if UseMETFilter:
-    #cuts = '('+cuts+'&&'+metfilter+')'
     cuts = '('+cuts+')' # metfilter pre-applied in preskim
 
 # badmuon filter
+#cuts += '&&(nbadmuon==0&&nlep<=2)'  # veto 3+ leptons
 cuts += '&&(nbadmuon==0)' 
 
 cuts = '('+cuts+')'
+
+print "cuts=",cuts
 
 ROOT.gROOT.ProcessLine('.x tdrstyle.C') 
 
@@ -248,11 +270,15 @@ ROOT.gROOT.ProcessLine('.x tdrstyle.C')
 #######################
 #  VV Reso backgrounds
 #######################
-vvSamples = ['WZTo2L2Q','WZTo3LNu',
+vvSamples = [
+'WZTo2L2Q',
+'WZTo3LNu',
 'ZZTo2L2Nu',
-'ZZTo2L2Q','ZZTo4L',
+'ZZTo2L2Q',
+'ZZTo4L',
 'ggZZTo2e2nu','ggZZTo2mu2nu',
-'TTZToLLNuNu']
+'TTZToLLNuNu'
+]
 
 vvPlotters=[]
 for sample in vvSamples:
@@ -294,17 +320,21 @@ if muoneg:
     else: 
         emuscale="(etrgsf*"+str(nonreso_alpha_el)+"+mtrgsf*"+str(nonreso_alpha_mu)+")"
 
-    nonresSamples = [
-    #'muonegtrgsf'
-    #'muonegtree_light_skim'
-    'muonegtree_light_skim_38_skim'
-    ]
+    nonresSamples = ['muoneg_light_skim','DYJetsToLL_emupair']
+
     nonresPlotters=[]
     for sample in nonresSamples:
         nonresPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
-        nonresPlotters[-1].addCorrectionFactor(str(0.001/lumi), 'norm')
         nonresPlotters[-1].addCorrectionFactor(emuscale, 'emuscale')
         nonresPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
+        if 'muoneg_' in sample:
+            nonresPlotters[-1].addCorrectionFactor(str(0.001/lumi), 'norm')
+        else:
+            nonresPlotters[-1].addCorrectionFactor('(-1./SumWeights)','norm')
+            nonresPlotters[-1].addCorrectionFactor('xsec','xsec')
+            nonresPlotters[-1].addCorrectionFactor('genWeight','genWeight')
+            nonresPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
+            if 'DYJetsToLL' in sample: nonresPlotters[-1].addCorrectionFactor('ZPtWeight','ZPtWeight')
 
     NONRES = MergedPlotter(nonresPlotters)
     NONRES.setFillProperties(1001,ROOT.kOrange)
@@ -318,11 +348,12 @@ if muoneg:
 # if use mc
 else:
 
-    mcnonresSamples = ['WWTo2L2Nu','WWToLNuQQ_BIG','WZTo1L1Nu2Q','WJetsToLNuHTBinBIG',
-                       'TTTo2L2Nu_forTTH','TTWJetsToLNu_BIG', 
+    mcnonresoSamples = ['WWTo2L2Nu','WWToLNuQQ_BIG','WZTo1L1Nu2Q','WJetsToLNuHTBinBIG',
+                       'TTTo2L2Nu_forTTH','TTWJetsToLNu_BIG', 'TGJets_BIG',
+                       # 'QCDPtBinMuEMEnriched', 
                        'T_tWch', 'T_tch_powheg', 'TBar_tWch', 'TBar_tch_powheg']
 
-    mcnonresPlotters=[]
+    mcnonresoPlotters=[]
     for sample in mcnonresoSamples:
         mcnonresoPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
         mcnonresoPlotters[-1].addCorrectionFactor('1./SumWeights','norm')
@@ -335,15 +366,15 @@ else:
         mcnonresoPlotters[-1].setAlias('passElHLT', '((llnunu_l1_l1_trigerob_HLTbit>>1&1)||(llnunu_l1_l2_trigerob_HLTbit>>1&1))');
         mcnonresoPlotters[-1].addCorrectionFactor('(passMuHLT||passElHLT)','HLT')
     
-    MCNONRES = MergedPlotter(mcnonresoPlotters)
-    MCNONRES.setFillProperties(1001,ROOT.kAzure-9)
+    MCNONRESO = MergedPlotter(mcnonresoPlotters)
+    MCNONRESO.setFillProperties(1001,ROOT.kAzure-9)
 
 
     # some plotting definition
-    MCNONRES.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass')
-    MCNONRES.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
-    MCNONRES.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
-    MCNONRES.setAlias('llnunu_mt_to_plot', 'llnunu_mt')
+    MCNONRESO.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass')
+    MCNONRESO.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
+    MCNONRESO.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
+    MCNONRESO.setAlias('llnunu_mt_to_plot', 'llnunu_mt')
 
 
 
@@ -354,35 +385,54 @@ else:
 # if use GJets to describe ZJets
 if dyGJets : 
     # parameters for GJets
-    el_gjet_scale=1.0
-    mu_gjet_scale=1.0 
-    gdataLumi=35.867*1000
+    el_gjet_scale=1.00
+    mu_gjet_scale=1.00 
+
+    if cutChain=='SR': 
+        el_gjet_scale=1.01720174117
+        mu_gjet_scale=1.0452050458
+    else:
+        el_gjet_scale=1.02810944619 
+        mu_gjet_scale=1.00061373085
+        
     gdataYield = 3402037584.2277574539
-    gdataFidXsec=gdataYield/gdataLumi
-    zjetsFidXsecAll = 72.31330890818101409
+    zjetsFidXsecAll = 72.39368615170057808
     zjetsFidXsecEl =  1.8368830484768923217
-    zjetsFidXsecMu =  70.413868731825942859
-    zjetsFidXsecAll_up = 73.317313237038433726
-    zjetsFidXsecAll_dn = 71.318806854104892068
+    zjetsFidXsecMu =  70.494245975345435795
+    zjetsFidXsecAll_up = 73.340989238570472253
+    zjetsFidXsecAll_dn = 71.45465868226966677
     zjetsFidXsecEl_up = 1.9004022884222013801
     zjetsFidXsecEl_dn = 1.7743842806529528389
-    zjetsFidXsecMu_up = 71.35227312468455807
-    zjetsFidXsecMu_dn = 69.483913323296292219
+    zjetsFidXsecMu_up = 71.375949126216639229
+    zjetsFidXsecMu_dn = 69.619765151461066921
     zjetsFidXsecLowLptAll = 1119.9216265291902346
     zjetsFidXsecLowLptEl = 459.14012486577632899
     zjetsFidXsecLowLptMu = 660.78150166340503802
 
+    gdataLumi=35.867*1000
+    gdataFidXsec=gdataYield/gdataLumi
+    zjetsFidXsecEl*=el_gjet_scale
+    zjetsFidXsecMu*=mu_gjet_scale
+    zjetsFidXsecEl_up*=el_gjet_scale
+    zjetsFidXsecEl_dn*=el_gjet_scale
+    zjetsFidXsecMu_up*=mu_gjet_scale
+    zjetsFidXsecMu_dn*=mu_gjet_scale
+
+
+
     # for GJets photon bkg subtraction
 
     phymetSamples = [
-    'G_DYJetsToLL_M50_MGMLM_Ext1',
+    #'G_DYJetsToLL_M50_MGMLM_Ext1',
+    'G_DYJetsToLL_M50_Ext',
     'G_TBar_tWch',
     'G_TBar_tch_powheg',
     'G_TGJets_BIG', 
     'G_TTGJets_BIG', 
     'G_T_tWch',  
     'G_T_tch_powheg', 
-    'G_WGToLNuG', 
+    'G_WGToLNuG',
+    #'G_WGJetsPt130', 
     'G_ZNuNuGJetsGt130', 
     'G_ZNuNuGJetsGt40Lt130',
     'G_WJetsToLNu_HT100to200_BIG',
@@ -411,8 +461,13 @@ if dyGJets :
     for sample in phymetSamples:
         phymetPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
         phymetPlotters[-1].addCorrectionFactor('-1/SumWeights','norm') # negative weight for subtraction
-        phymetPlotters[-1].addCorrectionFactor('xsec','xsec')
+        if sample=='G_ZNuNuGJetsGt130': phymetPlotters[-1].addCorrectionFactor('0.1832*1.43','xsec')  # NNLO/LO k-factor from JHEP02 (2016) 057, Table 2
+        elif sample=='G_ZNuNuGJetsGt40Lt130': phymetPlotters[-1].addCorrectionFactor('xsec*1.43','xsec')
+        elif sample=='G_WGJetsPt130':  phymetPlotters[-1].addCorrectionFactor('0.834*2.53','xsec')  # NNLO/LO k-factor from JHEP04 (2015) 018, Table 1
+        elif sample=='G_WGToLNuG':  phymetPlotters[-1].addCorrectionFactor('xsec*2.53','xsec')  # NNLO/LO k-factor from JHEP04 (2015) 018, Table 1
+        else: phymetPlotters[-1].addCorrectionFactor('xsec','xsec')
         phymetPlotters[-1].addCorrectionFactor('genWeight','genWeight')
+        phymetPlotters[-1].addCorrectionFactor('GJetsRhoWeight','GJetsRhoWeight')
         phymetPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
         phymetPlotters[-1].addCorrectionFactor(g_scale,'scale')
         phymetPlotters[-1].addCorrectionFactor(str(1/gdataFidXsec),'frac') # divided by g data fid-xsec
@@ -431,7 +486,23 @@ if dyGJets :
 
     ### the GJets data
     gdataSamples = [
-    'SinglePhoton_Run2016Full_ReReco_v2', 
+    #'SinglePhoton_Run2016Full_03Feb2017_uncorr', 
+    #'SinglePhoton_Run2016Full_03Feb2017_allcor', 
+    #'SinglePhoton_Run2016Full_03Feb2017_allcorV2_ZMassFineBinGraphSmooth',
+    #'SinglePhoton_Run2016Full_03Feb2017_allcorV2_ZMassFineBinSmooth', 
+    #'SinglePhoton_Run2016Full_03Feb2017_allcorV2_ZMassFineBin', 
+    #'SinglePhoton_Run2016Full_03Feb2017_allcorV2_ZMassGraph', 
+    #'SinglePhoton_Run2016Full_03Feb2017_allcorV2_ZMassGraphSmooth', 
+    'SinglePhoton_Run2016Full_03Feb2017_allcorV2', 
+    #'SinglePhoton_Run2016Full_03Feb2017_allcorV2_RcNoSmooth', 
+    #'SinglePhoton_Run2016Full_03Feb2017_allcorV2_NoRecoil', 
+    #'SinglePhoton_Run2016Full_03Feb2017_v0', 
+    #'SinglePhoton_Run2016Full_ReReco_v2', 
+    #'SinglePhoton_Run2016Full_ReReco_v2_oldSkim', 
+    #'SinglePhoton_Run2016Full_ReReco_v2_ReSkim', 
+    #'SinglePhoton_Run2016Full_ReReco_v2_RePreSkim', 
+    #'SinglePhoton_Run2016Full_ReReco_v2_RePreSkim_RcNoSmooth', 
+    #'SinglePhoton_Run2016Full_ReReco_v2_NoRecoil', 
     ]
 
     gdataPlotters=[]
@@ -442,6 +513,7 @@ if dyGJets :
         gdataPlotters[-1].addCorrectionFactor(str(1/gdataYield),'GJetsNorm0')
         gdataPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
         gdataPlotters[-1].addCorrectionFactor(zjets_scale,'zjets_scale')
+        #gdataPlotters[-1].addCorrectionFactor('((fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))<0.5)*1.05+(fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))>=0.5)*1.0)','dphiweight')
         if channel=='el' :
             gdataPlotters[-1].addCorrectionFactor('GJetsZPtWeightEl','GJetsZPtWeight')
             gdataPlotters[-1].addCorrectionFactor(str(zjetsFidXsecEl),'zjetsFidXsecEl')
@@ -453,8 +525,8 @@ if dyGJets :
             gdataPlotters[-1].addCorrectionFactor(str(zjetsFidXsecAll),'zjetsFidXsecAll')
 
     # the GJets plotter
-    gjetsPlotters = gdataPlotters
-    #gjetsPlotters = gdataPlotters+phymetPlotters
+    #gjetsPlotters = gdataPlotters
+    gjetsPlotters = gdataPlotters+phymetPlotters
 
 
     GJets = MergedPlotter(gjetsPlotters)
@@ -484,8 +556,6 @@ else:
     ### MC ZJets
     mczjetsSamples = [
     'DYJetsToLL_M50_Ext',
-#    'DYJetsToLL_M50_MGMLM_BIG',
-#    'DYJetsToLL_M50_MGMLM_BIG_NoRecoil',
     ]
 
     mczjetsPlotters=[]
@@ -518,6 +588,7 @@ else:
     MCZJets.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
     MCZJets.setAlias('llnunu_mt_to_plot', 'llnunu_mt')
 
+
 # end if dyGJets:..., else: ...
 
 ##
@@ -534,12 +605,12 @@ else:
 #####################
 
 sigSamples = [
-'BulkGravToZZToZlepZinv_narrow_600',
+#'BulkGravToZZToZlepZinv_narrow_600',
 #'BulkGravToZZToZlepZinv_narrow_800',
 'BulkGravToZZToZlepZinv_narrow_1000',
 #'BulkGravToZZToZlepZinv_narrow_1200',
 #'BulkGravToZZToZlepZinv_narrow_1400',
-'BulkGravToZZToZlepZinv_narrow_1600', 
+#'BulkGravToZZToZlepZinv_narrow_1600', 
 #'BulkGravToZZToZlepZinv_narrow_1800', 
 #'BulkGravToZZToZlepZinv_narrow_2000',
 #'BulkGravToZZToZlepZinv_narrow_2500',
@@ -552,19 +623,19 @@ sigSamples = [
 
 sigPlotters=[]
 sigSampleNames = {
-'BulkGravToZZToZlepZinv_narrow_600':str(k)+' x BulkG-600',
-'BulkGravToZZToZlepZinv_narrow_800':str(k)+' x BulkG-800',
-'BulkGravToZZToZlepZinv_narrow_1000':str(k)+' x BulkG-1000',
-'BulkGravToZZToZlepZinv_narrow_1200':str(k)+' x BulkG-1200',
-'BulkGravToZZToZlepZinv_narrow_1400':str(k)+' x BulkG-1400',
-'BulkGravToZZToZlepZinv_narrow_1600':str(k)+' x BulkG-1600',
-'BulkGravToZZToZlepZinv_narrow_1800':str(k)+' x BulkG-1800',
-'BulkGravToZZToZlepZinv_narrow_2000':str(k)+' x BulkG-2000',
-'BulkGravToZZToZlepZinv_narrow_2500':str(k)+' x BulkG-2500',
-'BulkGravToZZToZlepZinv_narrow_3000':str(k)+' x BulkG-3000',
-'BulkGravToZZToZlepZinv_narrow_3500':str(k)+' x BulkG-3500',
-'BulkGravToZZToZlepZinv_narrow_4000':str(k)+' x BulkG-4000',
-'BulkGravToZZToZlepZinv_narrow_4500':str(k)+' x BulkG-4500',
+'BulkGravToZZToZlepZinv_narrow_600':str(k)+' x BulkG M = 600 GeV',
+'BulkGravToZZToZlepZinv_narrow_800':str(k)+' x BulkG M = 800 GeV',
+'BulkGravToZZToZlepZinv_narrow_1000':str(k)+' x BulkG M = 1 TeV',
+'BulkGravToZZToZlepZinv_narrow_1200':str(k)+' x BulkG M = 1.2 TeV',
+'BulkGravToZZToZlepZinv_narrow_1400':str(k)+' x BulkG M = 1.4 TeV',
+'BulkGravToZZToZlepZinv_narrow_1600':str(k)+' x BulkG M = 1.6 TeV',
+'BulkGravToZZToZlepZinv_narrow_1800':str(k)+' x BulkG M = 1.8 TeV',
+'BulkGravToZZToZlepZinv_narrow_2000':str(k)+' x BulkG M = 2 TeV',
+'BulkGravToZZToZlepZinv_narrow_2500':str(k)+' x BulkG M = 2.5 TeV',
+'BulkGravToZZToZlepZinv_narrow_3000':str(k)+' x BulkG M = 3 TeV',
+'BulkGravToZZToZlepZinv_narrow_3500':str(k)+' x BulkG M = 3.5 TeV',
+'BulkGravToZZToZlepZinv_narrow_4000':str(k)+' x BulkG M = 4 TeV',
+'BulkGravToZZToZlepZinv_narrow_4500':str(k)+' x BulkG M = 4.5 TeV',
 }
 
 BulkGZZ2l2nuXsec = {
@@ -628,8 +699,10 @@ for sample in sigSamples:
 ##########################
 
 dataSamples = [
+'SingleEMU_Run2016Full_03Feb2017_allcorV2',
+#'SingleEMU_Run2016Full_03Feb2017_v0',
+#'SingleEMU_Run2016Full_ReReco_v2_DtReCalib',
 #'SingleEMU_Run2016Full_ReReco_v2',
-'SingleEMU_Run2016Full_ReReco_v2_DtReCalib',
 ]
 
 dataPlotters=[]
@@ -659,17 +732,21 @@ Stack = StackPlotter(outTag=tag, outDir=outdir)
 Stack.setPaveText(paveText)
 Stack.addPlotter(Data, "data_obs", "Data", "data")
 if muoneg: 
-    Stack.addPlotter(NONRES, "NonReso","Non-reson. (e#mu data)", "background")
+    #Stack.addPlotter(NONRES, "NonReso","Non-reson. (e#mu data)", "background")
+    Stack.addPlotter(NONRES, "NonReso","Non-Reson. background", "background")
 else:
-    Stack.addPlotter(MCNONRESO, "NonReso","Non-reson. (MC WW/Top/W/QCD)", "background")
-Stack.addPlotter(VV, "VVZReso","Z reson. (MC ZZ/WZ/TTZ)", "background")
+    #Stack.addPlotter(MCNONRESO, "NonReso","Non-reson. (MC WW/Top/W/QCD)", "background")
+    Stack.addPlotter(MCNONRESO, "NonReso","Non-Reson. background", "background")
+#Stack.addPlotter(VV, "VVZReso","Z reson. (MC ZZ/WZ/TTZ)", "background")
+Stack.addPlotter(VV, "VVZReso","Reson. background", "background")
 if dyGJets: 
-    Stack.addPlotter(ZJets, "ZJets","ZJets(#gamma+Jets data)", "background")
+    #Stack.addPlotter(ZJets, "ZJets","ZJets(#gamma+Jets data)", "background")
+    Stack.addPlotter(ZJets, "ZJets","Z+jets", "background")
 else: 
-    Stack.addPlotter(ZJets, "ZJets","ZJets(MC)", "background")
-
+    #Stack.addPlotter(ZJets, "ZJets","ZJets(MC)", "background")
+    Stack.addPlotter(ZJets, "ZJets","Z+jets", "background")
 for i in range(len(sigSamples)):
-  sigPlotters[i].setLineProperties(2,ROOT.kRed+i,2)
+  sigPlotters[i].setLineProperties(1,ROOT.kRed+i,2)
   Stack.addPlotter(sigPlotters[i],sigSamples[i],sigSampleNames[sigSamples[i]],'signal')  
 
  
@@ -682,13 +759,21 @@ tag+='_'
 
 
 if test: 
+    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 30, 0.0, 1500.0, titlex = "P_{T}(Z)", units = "GeV",output='zpt',outDir=outdir,separateSignal=sepSig)
+
 #    Stack.drawStack('nVert', cuts, str(lumi*1000), 80, 0.0, 80.0, titlex = "N vertices", units = "",output='nVert',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('rho', cuts, str(lumi*1000), 55, 0.0, 55.0, titlex = "#rho", units = "",output='rho',outDir=outdir,separateSignal=sepSig)
-    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 30, 0.0, 1500.0, titlex = "P_{T}(Z)", units = "GeV",output='zpt',outDir=outdir,separateSignal=sepSig)
-#    Stack.drawStack('llnunu_l1_mass_to_plot', cuts, str(lumi*1000), 60, 60, 120, titlex = "M(Z)", units = "GeV",output='zmass',outDir=outdir,separateSignal=sepSig)
+#    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 50, 0.0, 1500.0, titlex = "P_{T}(Z)", units = "GeV",output='zpt',outDir=outdir,separateSignal=sepSig)
+#    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 30, 0.0, 1500.0, titlex = "P_{T}(Z)", units = "GeV",output='zpt',outDir=outdir,separateSignal=sepSig)
+#    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 100, 0.0, 300.0, titlex = "P_{T}(Z)", units = "GeV",output='zpt_low2',outDir=outdir,separateSignal=sepSig)
+#    Stack.drawStack('llnunu_l1_mass_to_plot', cuts, str(lumi*1000), 30, 60, 120, titlex = "M(Z)", units = "GeV",output='zmass',outDir=outdir,separateSignal=sepSig)
+#    Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), 200, 0, 200, titlex = "MET", units = "GeV",output='met_low2',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
+#    Stack.drawStack('llnunu_mt_to_plot', cuts, str(lumi*1000), 80, 100.0, 300.0, titlex = "M_{T}", units = "GeV",output='mt_low2',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
+#    Stack.drawStack('fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))', cuts, str(lumi*1000), 50, 0, 5, titlex = "#Delta#phi(Z,MET)", units = "",output='dphiZMet',outDir=outdir,separateSignal=sepSig)
+
 #    Stack.drawStack('llnunu_mt_to_plot', cuts, str(lumi*1000), 50, 100.0, 1600.0, titlex = "M_{T}", units = "GeV",output='mt',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 #    Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), 30, 0, 1500, titlex = "MET", units = "GeV",output='met',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
-#    Stack.drawStack('llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi)', cuts, str(lumi*1000), 50, -500, 500.0, titlex = "MET_{#parallel}", units = "GeV",output='met_para',outDir=outdir,separateSignal=sepSig)
+#    Stack.drawStack('llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi)', cuts, str(lumi*1000), 25, -500, 500.0, titlex = "MET_{#parallel}", units = "GeV",output='met_para',outDir=outdir,separateSignal=sepSig)
 
 #    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 200, 0.0, 2000.0, titlex = "P_{T}(Z)", units = "GeV",output='zpt_high2k',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('llnunu_mt_to_plot', cuts, str(lumi*1000), 300, 0.0, 3000.0, titlex = "M_{T}", units = "GeV",output='mt_high3k',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
@@ -711,6 +796,36 @@ if test:
 #    Stack.drawStack('llnunu_l2_pt_to_plot*sin(llnunu_l2_phi_to_plot-llnunu_l1_phi)', cuts, str(lumi*1000), 50, -500, 500.0, titlex = "MET_{#perp}", units = "GeV",output='met_perp',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))', cuts, str(lumi*1000), 50, 0, 5, titlex = "#Delta#phi(Z,MET)", units = "",output='dphiZMet',outDir=outdir,separateSignal=sepSig)
 
+# below for PAS and public plots
+#    Stack.drawStack('nVert', cuts, str(lumi*1000), 80, 0.0, 80.0, titlex = "N vertices", units = "",output='nVert',outDir=outdir,separateSignal=sepSig)
+#    Stack.drawStack('rho', cuts, str(lumi*1000), 55, 0.0, 55.0, titlex = "#rho", units = "",output='rho',outDir=outdir,separateSignal=sepSig)
+#    Stack.drawStack('llnunu_mt_to_plot', cuts, str(lumi*1000), 60, 0.0, 3000.0, titlex = "M_{T}", units = "GeV",output='mt_high3',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
+#    Stack.drawStack('llnunu_l1_mass_to_plot', cuts, str(lumi*1000), 40, 70, 110, titlex = "m_{Z}", units = "GeV",output='zmass',outDir=outdir,separateSignal=sepSig)
+#    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 30, 0.0, 1500.0, titlex = "p_{T}^{Z}", units = "GeV",output='zpt_high',outDir=outdir,separateSignal=sepSig)
+#    Stack.drawStack('llnunu_l1_eta', cuts, str(lumi*1000), 20, -5.0, 5.0, titlex = "#eta^{Z} ", units = "",output='zeta',outDir=outdir,separateSignal=sepSig)
+#    Stack.drawStack('llnunu_l1_rapidity', cuts, str(lumi*1000), 60, -3.0, 3.0, titlex = "y^{Z} ", units = "",output='zrapidity',outDir=outdir,separateSignal=sepSig)
+#    Stack.drawStack('llnunu_l1_phi', cuts, str(lumi*1000), 32, -3.2, 3.2, titlex = "#phi^{Z}", units = "",output='zphi',outDir=outdir,separateSignal=sepSig)
+#    Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), 30, 0, 1500, titlex = "E_{T}^{miss}", units = "GeV",output='met_high',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
+#    Stack.drawStack('llnunu_l2_phi_to_plot', cuts, str(lumi*1000), 32, -3.2, 3.2, titlex = "#phi(E_{T}^{miss})", units = "",output='metPhi',outDir=outdir,separateSignal=sepSig)
+#    Stack.drawStack('llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi)', cuts, str(lumi*1000), 25, -500, 500.0, titlex = "E_{T #parallel}^{miss} ", units = "GeV",output='met_para_high',outDir=outdir,separateSignal=sepSig)
+#    Stack.drawStack('llnunu_l2_pt_to_plot*sin(llnunu_l2_phi_to_plot-llnunu_l1_phi)', cuts, str(lumi*1000), 25, -500, 500.0, titlex = "E_{T #perp}^{miss} ", units = "GeV",output='met_perp_high',outDir=outdir,separateSignal=sepSig)
+#    Stack.drawStack('fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))', cuts, str(lumi*1000), 50, 0, 5, titlex = "#Delta#phi(Z,E_{T}^{miss})", units = "",output='dphiZMet',outDir=outdir,separateSignal=sepSig)
+    if not dyGJets and  channel=='mu' :
+        Stack.drawStack('llnunu_l1_l1_pt', cuts+"&&(abs(llnunu_l1_l1_pdgId)==13)", str(lumi*1000), 50, 0.0, 1000.0, titlex = "P_{T}^{#mu_{1}}", units = "GeV",output='pTlep1_mu',outDir=outdir,separateSignal=sepSig)
+        Stack.drawStack('llnunu_l1_l1_eta', cuts+"&&(abs(llnunu_l1_l1_pdgId)==13)", str(lumi*1000), 30, -3.0, 3.0, titlex = "#eta^{#mu_{1}}", units = "",output='etalep1_mu',outDir=outdir,separateSignal=sepSig)
+        Stack.drawStack('llnunu_l1_l1_phi', cuts+"&&(abs(llnunu_l1_l1_pdgId)==13)", str(lumi*1000), 32, -3.2, 3.2, titlex = "#phi^{#mu_{1}}", units = "",output='philep1_mu',outDir=outdir,separateSignal=sepSig)
+        Stack.drawStack('llnunu_l1_l2_pt', cuts+"&&(abs(llnunu_l1_l2_pdgId)==13)", str(lumi*1000), 50, 0.0, 500.0, titlex = "P_{T}^{#mu_{2}}", units = "GeV",output='pTlep2_mu',outDir=outdir,separateSignal=sepSig)
+        Stack.drawStack('llnunu_l1_l2_eta', cuts+"&&(abs(llnunu_l1_l2_pdgId)==13)", str(lumi*1000), 30, -3.0, 3.0, titlex = "#eta^{#mu_{2}}", units = "",output='etalep2_mu',outDir=outdir,separateSignal=sepSig)
+        Stack.drawStack('llnunu_l1_l2_phi', cuts+"&&(abs(llnunu_l1_l2_pdgId)==13)", str(lumi*1000), 32, -3.2, 3.2, titlex = "#phi^{#mu_{2}}", units = "",output='philep2_mu',outDir=outdir,separateSignal=sepSig)
+
+    if not dyGJets and  channel=='el' :
+        Stack.drawStack('llnunu_l1_l1_pt', cuts+"&&(abs(llnunu_l1_l1_pdgId)==11)", str(lumi*1000), 50, 0.0, 1000.0, titlex = "P_{T}^{e_{1}}", units = "GeV",output='pTlep1_el',outDir=outdir,separateSignal=sepSig)
+        Stack.drawStack('llnunu_l1_l1_eta', cuts+"&&(abs(llnunu_l1_l1_pdgId)==11)", str(lumi*1000), 30, -3.0, 3.0, titlex = "#eta^{e_{1}}", units = "",output='etalep1_el',outDir=outdir,separateSignal=sepSig)
+        Stack.drawStack('llnunu_l1_l1_phi', cuts+"&&(abs(llnunu_l1_l1_pdgId)==11)", str(lumi*1000), 32, -3.2, 3.2, titlex = "#phi^{e_{1}}", units = "",output='philep1_el',outDir=outdir,separateSignal=sepSig)
+        Stack.drawStack('llnunu_l1_l2_pt', cuts+"&&(abs(llnunu_l1_l2_pdgId)==11)", str(lumi*1000), 50, 0.0, 500.0, titlex = "P_{T}^{e_{2}}", units = "GeV",output='pTlep2_el',outDir=outdir,separateSignal=sepSig)
+        Stack.drawStack('llnunu_l1_l2_eta', cuts+"&&(abs(llnunu_l1_l2_pdgId)==11)", str(lumi*1000), 30, -3.0, 3.0, titlex = "#eta^{e_{2}}", units = "",output='etalep2_el',outDir=outdir,separateSignal=sepSig)
+        Stack.drawStack('llnunu_l1_l2_phi', cuts+"&&(abs(llnunu_l1_l2_pdgId)==11)", str(lumi*1000), 32, -3.2, 3.2, titlex = "#phi^{e_{2}}", units = "",output='philep2_el',outDir=outdir,separateSignal=sepSig)
+
 
 else: 
     Stack.drawStack('nVert', cuts, str(lumi*1000), 80, 0.0, 80.0, titlex = "N vertices", units = "",output='nVert',outDir=outdir,separateSignal=sepSig)
@@ -728,22 +843,22 @@ else:
     Stack.drawStack('llnunu_l1_eta', cuts, str(lumi*1000), 200, -10.0, 10.0, titlex = "#eta(Z) ", units = "",output='zeta',outDir=outdir,separateSignal=sepSig)
     Stack.drawStack('llnunu_l1_rapidity', cuts, str(lumi*1000), 60, -3.0, 3.0, titlex = "Rapidity(Z) ", units = "",output='zrapidity',outDir=outdir,separateSignal=sepSig)
     Stack.drawStack('llnunu_l1_phi', cuts, str(lumi*1000), 64, -3.2, 3.2, titlex = "#phi(Z)", units = "",output='zphi',outDir=outdir,separateSignal=sepSig)
-    Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), 30, 0, 1500, titlex = "MET", units = "GeV",output='met_high',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
-    Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), 50, 0, 1000, titlex = "MET", units = "GeV",output='met',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
-    Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), 50, 0, 500, titlex = "MET", units = "GeV",output='met_low',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
-    Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), 100, 0, 300, titlex = "MET", units = "GeV",output='met_low2',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
-    Stack.drawStack('llnunu_l2_phi_to_plot', cuts, str(lumi*1000), 100, -3.2, 3.2, titlex = "#phi(MET)", units = "",output='metPhi',outDir=outdir,separateSignal=sepSig)
-    Stack.drawStack('llnunu_l2_sumEt', cuts, str(lumi*1000), 80, 0.0, 3000.0, titlex = "sumE_{T}", units = "GeV",output='metSumEt',outDir=outdir,separateSignal=sepSig)
-    Stack.drawStack('llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi)', cuts, str(lumi*1000), 100, -300, 300.0, titlex = "MET_{#parallel}", units = "GeV",output='met_para',outDir=outdir,separateSignal=sepSig)
-    Stack.drawStack('llnunu_l2_pt_to_plot*sin(llnunu_l2_phi_to_plot-llnunu_l1_phi)', cuts, str(lumi*1000), 100, -300, 300.0, titlex = "MET_{#perp}", units = "GeV",output='met_perp',outDir=outdir,separateSignal=sepSig)
-    Stack.drawStack('llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi)', cuts, str(lumi*1000), 50, -500, 500.0, titlex = "MET_{#parallel}", units = "GeV",output='met_para_high',outDir=outdir,separateSignal=sepSig)
-    Stack.drawStack('llnunu_l2_pt_to_plot*sin(llnunu_l2_phi_to_plot-llnunu_l1_phi)', cuts, str(lumi*1000), 50, -500, 500.0, titlex = "MET_{#perp}", units = "GeV",output='met_perp_high',outDir=outdir,separateSignal=sepSig)
-    Stack.drawStack('llnunu_l2_pt_to_plot/sqrt(llnunu_l2_sumEt)', cuts, str(lumi*1000), 100, 0.0, 20.0, titlex = "MET/#sqrt{sumE_{T}}", units = "",output='metOvSqSET',outDir=outdir,separateSignal=sepSig)
-    Stack.drawStack('fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))', cuts, str(lumi*1000), 50, 0, 5, titlex = "#Delta#phi(Z,MET)", units = "",output='dphiZMet',outDir=outdir,separateSignal=sepSig)
-    Stack.drawStack('fabs(llnunu_l1_pt+llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi))', cuts, str(lumi*1000), 100, 0, 1000, titlex = "#Delta P_{T}^{#parallel}(Z,MET)", units = "GeV",output='dPTPara',outDir=outdir,separateSignal=sepSig)
-    Stack.drawStack('fabs(llnunu_l2_pt_to_plot*sin(llnunu_l2_phi_to_plot-llnunu_l1_phi))', cuts, str(lumi*1000), 100, 0, 100, titlex = "#Delta P_{T}^{#perp}(Z,MET)", units = "GeV",output='dPTPerp',outDir=outdir,separateSignal=sepSig)
-    Stack.drawStack('fabs(llnunu_l1_pt+llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi))/llnunu_l1_pt', cuts, str(lumi*1000), 100, 0, 5, titlex = "#Delta P_{T}^{#parallel}(Z,MET)/P_{T}(Z)", units = "",output='dPTParaRel',outDir=outdir,separateSignal=sepSig)
-    Stack.drawStack('fabs(llnunu_l2_pt_to_plot*sin(llnunu_l2_phi_to_plot-llnunu_l1_phi))/llnunu_l1_pt', cuts, str(lumi*1000), 100, 0, 5, titlex = "#Delta P_{T}^{#perp}(Z,MET)/P_{T}", units = "",output='dPTPerpRel',outDir=outdir,separateSignal=sepSig)
+    Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), 30, 0, 1500, titlex = "E_{T}^{miss}", units = "GeV",output='met_high',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
+    Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), 50, 0, 1000, titlex = "E_{T}^{miss}", units = "GeV",output='met',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
+    Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), 50, 0, 500, titlex = "E_{T}^{miss}", units = "GeV",output='met_low',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
+    Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), 100, 0, 300, titlex = "E_{T}^{miss}", units = "GeV",output='met_low2',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
+    Stack.drawStack('llnunu_l2_phi_to_plot', cuts, str(lumi*1000), 100, -3.2, 3.2, titlex = "#phi(E_{T}^{miss})", units = "",output='metPhi',outDir=outdir,separateSignal=sepSig)
+    Stack.drawStack('llnunu_l2_sumEt', cuts, str(lumi*1000), 80, 0.0, 3000.0, titlex = "#sum E_{T}", units = "GeV",output='metSumEt',outDir=outdir,separateSignal=sepSig)
+    Stack.drawStack('llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi)', cuts, str(lumi*1000), 100, -300, 300.0, titlex = "E_{T #parallel}^{miss}", units = "GeV",output='met_para',outDir=outdir,separateSignal=sepSig)
+    Stack.drawStack('llnunu_l2_pt_to_plot*sin(llnunu_l2_phi_to_plot-llnunu_l1_phi)', cuts, str(lumi*1000), 100, -300, 300.0, titlex = "E_{T #perp}^{miss}", units = "GeV",output='met_perp',outDir=outdir,separateSignal=sepSig)
+    Stack.drawStack('llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi)', cuts, str(lumi*1000), 50, -500, 500.0, titlex = "E_{T #parallel}^{miss}", units = "GeV",output='met_para_high',outDir=outdir,separateSignal=sepSig)
+    Stack.drawStack('llnunu_l2_pt_to_plot*sin(llnunu_l2_phi_to_plot-llnunu_l1_phi)', cuts, str(lumi*1000), 50, -500, 500.0, titlex = "E_{T #perp}^{miss}", units = "GeV",output='met_perp_high',outDir=outdir,separateSignal=sepSig)
+    Stack.drawStack('llnunu_l2_pt_to_plot/sqrt(llnunu_l2_sumEt)', cuts, str(lumi*1000), 100, 0.0, 20.0, titlex = "E_{T}^{miss}/#sqrt{#sum E_{T}}", units = "",output='metOvSqSET',outDir=outdir,separateSignal=sepSig)
+    Stack.drawStack('fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))', cuts, str(lumi*1000), 50, 0, 5, titlex = "#Delta#phi(Z,E_{T}^{miss})", units = "",output='dphiZMet',outDir=outdir,separateSignal=sepSig)
+    Stack.drawStack('fabs(llnunu_l1_pt+llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi))', cuts, str(lumi*1000), 100, 0, 1000, titlex = "#Delta P_{T}^{#parallel}(Z,E_{T}^{miss})", units = "GeV",output='dPTPara',outDir=outdir,separateSignal=sepSig)
+    Stack.drawStack('fabs(llnunu_l2_pt_to_plot*sin(llnunu_l2_phi_to_plot-llnunu_l1_phi))', cuts, str(lumi*1000), 100, 0, 100, titlex = "#Delta P_{T}^{#perp}(Z,E_{T}^{miss})", units = "GeV",output='dPTPerp',outDir=outdir,separateSignal=sepSig)
+    Stack.drawStack('fabs(llnunu_l1_pt+llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi))/llnunu_l1_pt', cuts, str(lumi*1000), 100, 0, 5, titlex = "#Delta P_{T}^{#parallel}(Z,E_{T}^{miss})/P_{T}(Z)", units = "",output='dPTParaRel',outDir=outdir,separateSignal=sepSig)
+    Stack.drawStack('fabs(llnunu_l2_pt_to_plot*sin(llnunu_l2_phi_to_plot-llnunu_l1_phi))/llnunu_l1_pt', cuts, str(lumi*1000), 100, 0, 5, titlex = "#Delta P_{T}^{#perp}(Z,E_{T}^{miss})/P_{T}", units = "",output='dPTPerpRel',outDir=outdir,separateSignal=sepSig)
 
     if not dyGJets: 
         Stack.drawStack('llnunu_l1_deltaPhi', cuts, str(lumi*1000), 50, 0.0, 5.0, titlex = "#Delta#phi", units = "",output='ZdeltaPhi',outDir=outdir,separateSignal=sepSig)

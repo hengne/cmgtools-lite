@@ -107,17 +107,17 @@ def GetRatioHist(h1, hstack,blinding=False,blindingCut=100):
         hratio.SetBinContent(i, RR)
         hratio.SetBinError(i, EE)
         if blinding and h1.GetBinCenter(i)>blindingCut: 
-            hratio.SetBinContent(i, 0)
-            hratio.SetBinError(i, 0)
+            hratio.SetBinContent(i, -100)
+            #hratio.SetBinError(i, 0)
 
     hratio.SetMarkerStyle(20)
     hratio.SetLineWidth(1)
     hratio.SetMarkerSize(1.)
     hratio.SetMarkerColor(ROOT.kBlack)
     hratio.GetXaxis().SetTitle('')
-    hratio.GetYaxis().SetTitle('Data/MC')
-    #hratio.GetYaxis().SetRangeUser(0.0,2.0)
-    hratio.GetYaxis().SetRangeUser(0.5,1.5)
+    hratio.GetYaxis().SetTitle('Data/Bkg.')
+    hratio.GetYaxis().SetRangeUser(0.0,2.0)
+    #hratio.GetYaxis().SetRangeUser(0.5,1.5)
     hratio.GetXaxis().SetLabelFont(42)
     hratio.GetXaxis().SetLabelOffset(0.007)
     hratio.GetXaxis().SetLabelSize(0.1)
@@ -210,6 +210,7 @@ class StackPlotter(object):
 
         ROOT.gStyle.SetOptStat(0)
         ROOT.gStyle.SetOptTitle(0)
+        ROOT.gStyle.SetErrorX(0.5)
         
         p1.cd()
             
@@ -344,7 +345,8 @@ class StackPlotter(object):
 
         if len(units)>0:
             frame.GetXaxis().SetTitle(titlex + " (" +units+")")
-            frame.GetYaxis().SetTitle("Events / "+str((maxi-mini)/bins)+ " "+units)
+            #frame.GetYaxis().SetTitle("Events / "+str((maxi-mini)/bins)+ " "+units)
+            frame.GetYaxis().SetTitle("Events / {:.0f} {:s}".format((maxi-mini)/bins,units))
         else:    
             frame.GetXaxis().SetTitle(titlex)
             frame.GetYaxis().SetTitle("Events")
@@ -373,7 +375,7 @@ class StackPlotter(object):
             if typeP != "data" and typeP !='signal':
                 legend.AddEntry(histo,label,"f")
             elif typeP == 'data':
-                legend.AddEntry(histo,label,"p")
+                legend.AddEntry(histo,label,"lep")
 
         for (histo,label,typeP) in reversed(zip(hists,self.labels,self.types)):
             if typeP == "signal":
@@ -382,7 +384,7 @@ class StackPlotter(object):
 
  #       ROOT.SetOwnership(legend,False)
 
-        legend.Draw()
+#        legend.Draw()
         if self.log:
             p1.SetLogy()
         #p1.SetLeftMargin(p1.GetLeftMargin()*1.15)
@@ -412,30 +414,46 @@ class StackPlotter(object):
 	pt.SetTextAlign(12)
 	pt.SetFillStyle(0)
 	pt.SetTextFont(42)
-	pt.SetTextSize(0.03)
-	#text = pt.AddText(0.15,0.3,"CMS Preliminary")
-	text = pt.AddText(0.15,0.3,"CMS Work in progress")
+	pt.SetTextSize(0.035)
+#	text = pt.AddText(0.05,0.3,"CMS Preliminary")
+#	text = pt.AddText(0.15,0.3,"CMS Work in progress")
 #	text = pt.AddText(0.25,0.3,"#sqrt{s} = 7 TeV, L = 5.1 fb^{-1}  #sqrt{s} = 8 TeV, L = 19.7 fb^{-1}")
 	#text = pt.AddText(0.55,0.3,"#sqrt{s} = 13 TeV 2015 L = "+"{:.3}".format(float(lumi)/1000)+" fb^{-1}")
 	#text = pt.AddText(0.55,0.3,"#sqrt{s} = 13 TeV 2016 L = "+"{:.3}".format(float(lumi)/1000)+" fb^{-1}")
-	text = pt.AddText(0.55,0.3,self.paveText) 
+	text = pt.AddText(0.66,0.3,self.paveText) 
 	pt.Draw()   
-        
+
+        latex2 = ROOT.TLatex()
+        latex2.SetNDC()
+        latex2.SetTextSize(1*p1.GetTopMargin())
+        latex2.SetTextFont(62)
+        latex2.SetTextAlign(11) # align right
+        latex2.DrawLatex(0.25, 0.85, "CMS")
+        latex2.SetTextSize(0.7*p1.GetTopMargin())
+        latex2.SetTextFont(52)
+        latex2.SetTextAlign(11)
+#        latex2.DrawLatex(0.25, 0.8, "Preliminary")       
 
         if self.doRatioPlot:
             hratio = GetRatioHist(dataH,stack,blinding, blindingCut)
             hratio.SetName(output+'_'+'hratio')
+            hratio_band = hratio.Clone(output+'_hratio_band')
             hline = hratio.Clone(output+'_'+"hline")
-            for ii in range(hline.GetNbinsX()+1): 
-                hline.SetBinContent(ii,1.0)
-                hline.SetBinError(ii,0.0)
+            for ii in range(hline.GetNbinsX()):
+                hratio_band.SetBinContent(ii+1,1.0) 
+                hline.SetBinContent(ii+1,1.0)
+                hline.SetBinError(ii+1,0.0)
+            hratio_band.SetFillColor(ROOT.kOrange+6)
+            hratio_band.SetFillStyle(1001)
+            hratio_band.SetMarkerStyle(0)
+            hratio_band.SetLineStyle(0)
             hline.SetLineColor(ROOT.kRed)
             hline.SetFillStyle(0)
             p2.cd()
-            hratio.Draw('AXIS')
+            hratio_band.Draw('E2')
             hline.Draw('HIST,SAME')
             hratio.Draw('P,SAME')
-                
+            legend.AddEntry(hratio_band,"Stat. uncertainty","f")        
 
         # blinding mask 
         if blinding : 
@@ -470,6 +488,10 @@ class StackPlotter(object):
                 p2.cd()
                 hmask_ratio.Draw("HIST,SAME")
 
+        # draw legend
+        p1.cd()
+        legend.Draw()
+
         plot={'canvas':c1,'stack':stack,'legend':legend,'data':dataH,'dataG':dataG,'latex1':pt}
         if separateSignal and len(signalHs)>0:
             for (sigH,sigLab) in reversed(zip(signalHs,signalLabels)):
@@ -483,6 +505,7 @@ class StackPlotter(object):
         #os.system('epstopdf '+outDir+'/'+output+'.eps')
         #c1.Print(self.outFileName+'.ps')
         c1.Print(self.outFileName+'.pdf')
+        c1.SaveAs(self.outFileName+'.C')
 
         self.fout.cd()
         c1.Write() 
@@ -493,7 +516,10 @@ class StackPlotter(object):
         legend.Write()
         p1.Write()
         p2.Write()
-        if self.doRatioPlot:   hratio.Write()
+        if self.doRatioPlot:
+            hratio.Write()
+            hratio_band.Write()
+            hline.Write()
         frame.Write()
         for hist in hists: hist.Write()  
         #fout.Close()
@@ -1105,7 +1131,7 @@ class StackPlotter(object):
 	pt.SetTextFont(42)
 	pt.SetTextSize(0.03)
 	text = pt.AddText(0.15,0.3,"CMS Work in progress")
-	text = pt.AddText(0.55,0.3,"#sqrt{s} = 13 TeV, L = "+"{:.3}".format(float(lumi)/1000)+" fb^{-1}")
+	text = pt.AddText(0.55,0.3,"#sqrt{s} = 13 TeV, L = "+"{:.1}".format(float(lumi)/1000)+" fb^{-1}")
 	pt.Draw()   
 
         plot={'canvas':c1,'SigEffHists':SigEffHists,'BkgEffHistAll':BkgEffHistAll,'ROCGraphs':ROCGraphs,'legend':legend,'data':dataH, 'latex1':pt}
